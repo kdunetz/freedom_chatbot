@@ -21,8 +21,8 @@ var bodyParser = require('body-parser'); // parser for post requests
 var Conversation = require('watson-developer-cloud/conversation/v1'); // watson sdk
 
 var app = express();
-process.env.CONVERSATION_USERNAME = "f472ec31-7108-4288-8098-4c03617da12f";
-process.env.CONVERSATION_PASSWORD = "y4klmz8rzxEA";
+process.env.CONVERSATION_USERNAME = "6686afe8-02f7-416c-80c3-2cf2993c480a";
+process.env.CONVERSATION_PASSWORD = "lRyRFn7UGcgJ";
 process.env.WORKSPACE_ID = "37c3744a-a91e-49fa-b054-793e522e9fab";
 
 // Bootstrap application settings
