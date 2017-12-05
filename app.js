@@ -29,6 +29,7 @@ process.env.WORKSPACE_ID = "6686afe8-02f7-416c-80c3-2cf2993c480a";
 app.use(express.static('./public')); // load UI from public folder
 app.use(bodyParser.json());
 var startConversation = true;
+var x = 0;
 
 // Create the service wrapper
 var conversation = new Conversation({
@@ -57,6 +58,7 @@ app.post('/api/message', function(req, res) {
   };
   if (startConversation)
   {
+console.log("STARTING CONVERSATION");
     payload = {
       workspace_id: workspace,
       context: {},
@@ -67,7 +69,6 @@ app.post('/api/message', function(req, res) {
 
   // Send the input to the conversation service
   conversation.message(payload, function(err, data) {
-console.log("THIS IS WHERE I AM");
     if (err) {
       return res.status(err.code || 500).json(err);
     }
@@ -99,7 +100,7 @@ if (payload.input.text == 'validate_user' || payload.input.text == 'add_printer'
         return res.json(updateMessage(payload, data));
    });
 }
-else if (data.context.action == 'validate_user' || data.context.action == 'add_printer' || data.context.action == 'password_reset' || data.context.action == 'close_ticket')
+else if (data.context.action == 'validate_user' || data.context.action == 'add_printer' || data.context.action == 'password_reset' || data.context.action == 'close_ticket' || data.context.action == 'email_instructions' || data.context.action == 'show_instructions')
 {
     console.log("RECEIVED ACTION");
     performAction(data, function(data) {
@@ -127,9 +128,24 @@ function performAction(data, callback)
    response.output = {}; // intentially clear out what Watson thought to respond with
    if (action == 'validate_user')
    {
-      response.output.text = "User Validated";
       console.log("INSERT VALIDATE USER TO ACTIVE DIRECTORY");
-      if (conversation == 'reset_password') action = "password_reset";
+      var validated = false;
+      if (data.context.username == 'kdunetz')
+      {
+         validated = true
+      }
+      
+      if (validated == false)
+      {
+         response.output.text = "User Not Validated, please start again";
+         startConversation = true;
+      }
+      else
+      {
+         response.output.text = "User Validated";
+         if (conversation == 'reset_password') action = "password_reset";
+         if (conversation == 'add_printer') response.output.text += ", Enter <B>1</B> if you'd like to have the chatbot walk you through how to add a printer?, Enter <B>2</B> if you'd like to have instructions emailed to you on how to install the printer";
+      }
    }
    if (action == 'close_ticket')
    {
@@ -139,12 +155,27 @@ function performAction(data, callback)
    }
    if (action == 'show_instructions')
    {
-      response.output.text = "<table border=1><tr><td>1</td><td>do This</td></tr></table>";
+      console.log("INSERT A DATABASE FULL OF DOCUMENTATION YOU WANT CUSTOMER TO STEP THROUGH");
+      var instructions = ["1) Click the Start button, then select Devices and Printers", "2) In the menu bar, click Add a Printer",  "3) Select Add a network, wireless, or Bluetooth printer"];
+      response.output.text = instructions[x];
+      if ((instructions.length - 1) == x++)
+      {
+         //response.output.text = "No more instructions.  What else would you like to do today?";
+         response.context.done = 1;
+         x = 0;
+         //startConversation = true;
+      }
    }
    if (action == 'add_printer')
    {
       response.output.text = "Printer Added";
       console.log("INSERT CODE TO ADD PRINTER HERE");
+   }
+   if (action == 'email_instructions')
+   {
+      response.output.text = "Instructions are being sent via Email";
+      console.log("INSERT CODE TO SEND EMAIL");
+      startConversation = true;
    }
    if (action == 'password_reset')
    {

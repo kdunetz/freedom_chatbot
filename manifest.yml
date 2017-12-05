@@ -4,12 +4,12 @@ declared-services:
     label: conversation
     plan: free
 applications:
-- name: conversation-simple
+- name: freedom-chatbot1
   command: npm start
   path: .
   memory: 256M
   instances: 1
   services:
-  - my-conversation-service
+  - Conversation-sz 
   env:
     NPM_CONFIG_PRODUCTION: false
