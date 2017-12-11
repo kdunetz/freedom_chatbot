@@ -24,12 +24,19 @@ var app = express();
 process.env.CONVERSATION_USERNAME = "1387d43d-ca79-4e12-917d-ef3448ce857f";
 process.env.CONVERSATION_PASSWORD = "lRyRFn7UGcgJ";
 process.env.WORKSPACE_ID = "6686afe8-02f7-416c-80c3-2cf2993c480a";
+process.env.MICROSOFT_APP_ID = "96f9ce38-cbbc-473d-ab1e-bd3471da0a7f";
+process.env.MICROSOFT_APP_PASSWORD= "lspVUH25tytqRZLN502_))[";
 
 // Bootstrap application settings
 app.use(express.static('./public')); // load UI from public folder
 app.use(bodyParser.json());
 var startConversation = true;
 var x = 0;
+
+var Client = require('node-rest-client').Client;
+ 
+var client = new Client();
+
 
 // Create the service wrapper
 var conversation = new Conversation({
@@ -56,7 +63,7 @@ app.post('/api/message', function(req, res) {
     context: req.body.context || {},
     input: req.body.input || {}
   };
-  if (startConversation)
+  if (startConversation || payload.input.text == 'restart')
   {
 console.log("STARTING CONVERSATION");
     payload = {
@@ -74,6 +81,16 @@ console.log("STARTING CONVERSATION");
     }
     console.log(JSON.stringify(payload, null, 2));
     console.log(JSON.stringify(data, null, 2));
+    if (payload.input.text == 'intro')
+    {
+       var words = data.output.text;
+       client.get("https://new-node-red-demo-kad.mybluemix.net/playwords?text=" + words , function (data, response) {
+           // parsed response body as js object 
+           console.log(data);
+           // raw response 
+           console.log(response);
+       });
+    }
 /*
 if (payload && payload.input && (payload.input.text == 'clear' || payload.input.text == 'start'))
 {
@@ -137,19 +154,19 @@ function performAction(data, callback)
       
       if (validated == false)
       {
-         response.output.text = "User Not Validated, please start again";
+         response.output.text = "User name does not match account logged in. Please try again or contact Service Desk at 1-888-555-1212";
          startConversation = true;
       }
       else
       {
-         response.output.text = "User Validated";
+         response.output.text = "Great, your User Name is confirmed. ";
          if (conversation == 'reset_password') action = "password_reset";
-         if (conversation == 'add_printer') response.output.text += ", Enter <B>1</B> if you'd like to have the chatbot walk you through how to add a printer?, Enter <B>2</B> if you'd like to have instructions emailed to you on how to install the printer";
+         if (conversation == 'add_printer') response.output.text += "Enter <B>1</B> if you'd like to have the chatbot walk you through how to add a printer?, Enter <B>2</B> if you'd like to have instructions emailed to you on how to install the printer";
       }
    }
    if (action == 'close_ticket')
    {
-      response.output.text = "Ticket Closed, Would you like to perform another task";
+      response.output.text = "Ticket Closed, Would you like to perform another task?";
       console.log("INSERT CLOSE TICKET CODE");
       startConversation = true;
    }

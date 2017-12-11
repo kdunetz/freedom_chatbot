@@ -4,7 +4,7 @@ declared-services:
     label: conversation
     plan: free
 applications:
-- name: freedom-chatbot1
+- name: freedom-chatbot-web
   command: npm start
   path: .
   memory: 256M
