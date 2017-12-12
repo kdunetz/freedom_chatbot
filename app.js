@@ -37,7 +37,6 @@ var Client = require('node-rest-client').Client;
  
 var client = new Client();
 
-
 // Create the service wrapper
 var conversation = new Conversation({
   // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
@@ -58,6 +57,7 @@ app.post('/api/message', function(req, res) {
     });
   }
 /* the first time we have no context in the payload...but after that the app maintains the context to pass back to Conversation service */
+
   var payload = {
     workspace_id: workspace,
     context: req.body.context || {},
@@ -65,13 +65,13 @@ app.post('/api/message', function(req, res) {
   };
   if (startConversation || payload.input.text == 'restart')
   {
-console.log("STARTING CONVERSATION");
-    payload = {
-      workspace_id: workspace,
-      context: {},
-      input: {}
-    };
-    startConversation = false;
+     console.log("STARTING CONVERSATION");
+     payload = {
+        workspace_id: workspace,
+        context: {},
+        input: {}
+     };
+     startConversation = false;
   }
 
   // Send the input to the conversation service
@@ -91,47 +91,26 @@ console.log("STARTING CONVERSATION");
            console.log(response);
        });
     }
-/*
-if (payload && payload.input && (payload.input.text == 'clear' || payload.input.text == 'start'))
-{
-  var payload = {
-    workspace_id: workspace,
-    context: {},
-    input: {}
-  };
-   conversation.message(payload, function(err, data) {
-console.log("IN SECOND MESSAGE");
-      if (err) {
-        return res.status(err.code || 500).json(err);
-      }
-      return res.json(updateMessage(payload, data));
-   });
-}
-else
-*/ 
-if (payload.input.text == 'validate_user' || payload.input.text == 'add_printer' || payload.input.text == 'show_instructions')
-{
-    console.log("RECEIVED INPUT");
-    performAction(payload.input.text, function(data) {
-        console.log("IN HERE");
+
+    if (payload.input.text == 'validate_user' || payload.input.text == 'add_printer' || payload.input.text == 'show_instructions') /* just for testing actions */
+    {
+        console.log("RECEIVED INPUT");
+        performAction(payload.input.text, function(data) {
+            console.log("IN HERE");
         return res.json(updateMessage(payload, data));
-   });
-}
-else if (data.context.action == 'validate_user' || data.context.action == 'add_printer' || data.context.action == 'password_reset' || data.context.action == 'close_ticket' || data.context.action == 'email_instructions' || data.context.action == 'show_instructions')
-{
-    console.log("RECEIVED ACTION");
-    performAction(data, function(data) {
-        console.log("IN HERE");
+       });
+    }
+    else if (data.context.action == 'validate_user' || data.context.action == 'add_printer' || data.context.action == 'password_reset' || data.context.action == 'close_ticket' || data.context.action == 'email_instructions' || data.context.action == 'show_instructions')
+    {
+        console.log("RECEIVED ACTION");
+        performAction(data, function(data) {
+            console.log("IN HERE");
+            return res.json(updateMessage(payload, data));
+       });
+    }
+    else
         return res.json(updateMessage(payload, data));
-   });
-}
-else
-    return res.json(updateMessage(payload, data));
-/*
-    setTimeout(function() {
-        return res.json(updateMessage(payload, data));
-}, 1000, res, payload, data);
-*/
+
     // ORIGINAL CODE return res.json(updateMessage(payload, data));
   });
 });
