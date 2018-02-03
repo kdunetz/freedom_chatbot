@@ -1,0 +1,16 @@
+Go to Github http://github.com/kdunetz/freedom_chatbot
+
+git clone https://github.com/kdunetz/freedom_chatbot.git my-chatbot
+
+Edit build_and_deploy.sh and change the NAME parameter to your new app name
+
+Run Kubectl login for destination environment
+
+Run build_and_deploy.sh
+
+Edit build_and_rollout.sh to Change the Image Version to 2.0
+Edit public/index.html to and change "Reset Chat" button to "Reset Chat 2.0"
+
+Run build_and_rollout.sh to show that the image is now 2.0
+
+run rollback.sh and show that the image went back to original (button changed back)

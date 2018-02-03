@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE=kdunetz/it-chatbot:4.0
+IMAGE=kdunetz/it-chatbot:1.0
 NAME=it-chatbot
 
 docker build -t $IMAGE .
