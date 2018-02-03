@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: it-chatbot 
+  name: NAME 
 spec:
   type: NodePort
   ports:
     - port: 3000
       targetPort: 3000
   selector:
-    app: it-chatbot 
+    app: NAME
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: it-chatbot 
+  name: NAME
 spec:
   replicas: 3
   template:
     metadata:
       labels:
-        app: it-chatbot 
+        app: NAME 
     spec:
       containers:
-      - name: it-chatbot 
-        image: kdunetz/it-chatbot:1.0 
+      - name: NAME 
+        image: IMAGE
         imagePullPolicy: Always 
         env:
         - name: GET_HOSTS_FROM
