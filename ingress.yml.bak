@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/add-base-url: http://www.example.com/
+    kubernetes.io/ingress.class: nginx
+  name:  it-chatbot-ingress
+  namespace: default
+spec:
+  rules:
+  - host: chatbot
+  - http:
+      paths:
+      - backend:
+          serviceName: it-chatbot 
+          servicePort: 3000 
+        path: /it_chatbot
+status:
+  loadBalancer:
+    ingress:
+    - ip: 169.45.189.35

@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: it-chatbot 
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: it-chatbot 
+    spec:
+      containers:
+      - name: it-chatbot 
+        image: kdunetz/it-chatbot:1.0 
+        imagePullPolicy: Always 
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        ports:
+        - containerPort: 3000
