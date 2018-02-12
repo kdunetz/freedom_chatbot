@@ -1,1 +1,1 @@
-kubectl rollout undo deployment/it-chatbot
+kubectl rollout undo deployment/it-chatbot -n default

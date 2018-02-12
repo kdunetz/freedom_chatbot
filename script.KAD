@@ -1,8 +1,12 @@
 Go to Github http://github.com/kdunetz/freedom_chatbot
 
+Normally we would fork the code and move into your domain, but we will just clone it now for simplicity
+
 git clone https://github.com/kdunetz/freedom_chatbot.git my-chatbot
 
-Edit build_and_deploy.sh and change the NAME parameter to your new app name
+cd my-chatbot 
+
+Edit build_and_deploy.sh and change the IMAGE and NAME parameters to your new image and app name
 
 Run Kubectl login for destination environment
 

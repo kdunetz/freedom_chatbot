@@ -9,5 +9,5 @@ docker push $IMAGE
 #kubectl delete -f deploy_and_service.yml
 #kubectl create -f deploy_and_service.yml
 
-kubectl set image deployment/it-chatbot it-chatbot=$IMAGE
+kubectl set image deployment/it-chatbot it-chatbot=$IMAGE -n default
 
