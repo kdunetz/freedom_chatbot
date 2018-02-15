@@ -46,6 +46,8 @@ var conversation = new Conversation({
   'version_date': '2017-05-26'
 });
 
+app.get('/api/version', (req, res) => res.send(process.env.VERSION || 'Unknown'));
+
 // Endpoint to be call from the client side
 app.post('/api/message', function(req, res) {
   var workspace = process.env.WORKSPACE_ID || '<workspace-id>';
