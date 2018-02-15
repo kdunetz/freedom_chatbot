@@ -1,0 +1,66 @@
+podTemplate(label: 'docker', namespace: 'admin',
+  containers: [
+    containerTemplate(name: 'docker', image: 'docker:1.11', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.0', command: 'cat', ttyEnabled: true)
+  ],
+  volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]
+  ) {
+
+  def namespace = 'default'
+  def gitSrc = 'https://github.com/kdunetz/freedom_chatbot.git/'
+  def dockerRegistry = 'https://index.docker.io/v1/'
+  def image = 'kdunetz/it-chatbot'
+  def deployment = 'deployment/deploy.yml'
+  def service = 'deployment/svc.yml'
+  def selector = 'javaspringbasickad'
+  
+  node('docker') {
+    
+    stage('Get Source') {
+      git url: gitSrc
+    }
+
+    //stage('Build Maven project') {
+    //  container('maven') {
+    //      sh "mvn -B clean package"
+    //  }
+    //}
+    docker.withRegistry("${dockerRegistry}", 'docker-id') {
+      stage('Build Docker image') {
+        container('docker') {
+          //def props = readProperties  file:'deployment/pipeline.properties'
+          //def tag = props['version']
+          def tag = "12"
+          sh "cat /home/jenkins/.dockercfg"
+          sh "docker build -t ${image}:${tag} ."
+          sh "docker push ${image}:${tag}" 
+          sh "docker tag ${image}:${tag} ${image}:latest"
+          sh "docker push ${image}:latest" 
+        }
+      }
+    }
+    //stage( 'Clean Up Existing Deployments' ) {
+    //  container('kubectl') {
+    //    withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+    //                        credentialsId: 'icp-id',
+    //                        usernameVariable: 'DOCKER_HUB_USER',
+    //                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+    //        
+    //        sh "kubectl delete deployments -n ${namespace} --selector=app=${selector}"
+    //        sh "kubectl delete services -n ${namespace} --selector=app=${selector}"
+    //    }
+    //  } 
+    //}
+    //stage( 'Deploy to Cluster' ) {
+    //  container('kubectl') {
+    //   withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+     //                       credentialsId: 'icp-id',
+    //                        usernameVariable: 'DOCKER_HUB_USER',
+    //                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+    //        
+    //        sh "kubectl create -n ${namespace} -f ${deployment} -f ${service}"
+    //    }
+    //  } 
+    //}
+  }
+}
