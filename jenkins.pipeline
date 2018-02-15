@@ -30,7 +30,7 @@ podTemplate(label: 'docker', namespace: 'admin',
         container('docker') {
           //def props = readProperties  file:'deployment/pipeline.properties'
           //def tag = props['version']
-          def tag = "12"
+          def tag = build.environment.get("BUILD_NUMBER") 
           sh "cat /home/jenkins/.dockercfg"
           sh "docker build -t ${image}:${tag} ."
           sh "docker push ${image}:${tag}" 
