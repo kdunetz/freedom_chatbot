@@ -1,6 +1,12 @@
 #!/bin/bash
 
-IMAGE=kdunetz/it-chatbot:2.0
+#IMAGE=kdunetz/it-chatbot:2.0
+
+if [ -z "$IMAGE" ]
+then
+   echo "Please set environment variables with . ./setenv.sh"  
+   exit
+fi
 
 docker build -t $IMAGE .
 docker push $IMAGE 
