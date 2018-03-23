@@ -1,8 +1,14 @@
 #!/bin/bash
 
-NAMESPACE=default
-IMAGE=kdunetz/it-chatbot:1.0
-NAME=it-chatbot-kad
+#NAMESPACE=default
+#IMAGE=kdunetz/it-chatbot:1.0
+#NAME=it-chatbot-kad
+
+if [ -z "$IMAGE" ]
+then
+   echo "Please set environment variables with . ./setenv.sh"  
+   exit
+fi
 
 # NO BUILD HERE
 #docker build -t $IMAGE .

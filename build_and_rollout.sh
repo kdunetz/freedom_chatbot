@@ -1,6 +1,12 @@
 #!/bin/bash
 
-IMAGE=kdunetz/it-chatbot:2.0
+#IMAGE=kdunetz/it-chatbot:2.0
+
+if [ -z "$IMAGE" ]
+then
+   echo "Please set environment variables with . ./setenv.sh"  
+   exit
+fi
 
 docker build -t $IMAGE .
 docker push $IMAGE 
@@ -9,5 +15,5 @@ docker push $IMAGE
 #kubectl delete -f deploy_and_service.yml
 #kubectl create -f deploy_and_service.yml
 
-kubectl set image deployment/it-chatbot it-chatbot=$IMAGE -n default
+kubectl set image deployment/$NAME $NAME=$IMAGE -n default
 
